@@ -22,18 +22,15 @@ module.exports.add = function add(name, phone, email) {
 };
 
 function makeCorrectPhone (phone) {
-    var correctPhone;
-    for (var i=0; i<phone.length;i++) {
-        if (phone[i]=='+'|| phone[i]==' ' || phone[i]=='(' || phone[i]==')') {
-            phone[i].splice(i,1);
-        }
-    }
-    correctPhone[0]='+';
+    var correctPhone='+';
+
+    phone=phone.replace(/[\+?\s?\(?\)?]/,'');
+
     if (phone.length-10===0) {
-        correctPhone[1]='7';
+        correctPhone+='7';
     }
-    for(i=0; i<(phone.length-10);i++) {
-        correctPhone[i+1]=phone[i];
+    for(var i=0; i<(phone.length-10);i++) {
+        correctPhone+=phone[i];
     }
     correctPhone[i+1]='(';
     for (var j=0;j<3;j++) {
@@ -54,16 +51,19 @@ function makeCorrectPhone (phone) {
         i++;
     }
     return correctPhone;
-    }
+}
 
 
 
 function isValidPhone(phone) {
-    return /^(\+?\d?\d?)\s?((\d\d\d)|(\(\d\d\d\)))\s?(\d\d\d)\s?\-?\d\s?\-?(\d\d\d)$/;
+    var testPhone= /^(\+?\d?\d?)\s?((\d\d\d)|(\(\d\d\d\)))\s?(\d\d\d)\s?\-?\d\s?\-?(\d\d\d)$/;
+    return testPhone.test(phone);
 }
 
+
 function isValidEmail (email) {
-    return /^[A-Za-zА-Яа-я0-9_]+@[A-Za-zА-Яа-я0-9_]+\.[A-Za-zА-Яа-я0-9_]+\.?[A-Za-zА-Яа-я0-9_]+?$/;
+    var testEmail= /^[A-Za-zА-Яа-я0-9_]+@[A-Za-zА-Яа-я0-9_\-]+\.[A-Za-zА-Яа-я0-9_]+\.?[A-Za-zА-Яа-я0-9_]+?$/;
+    return testEmail.test(email)
 }
 
 /*
@@ -94,7 +94,7 @@ module.exports.find = function find(query) {
 module.exports.remove = function remove(query) {
     var isDelete=0;
     for(var j=0;j<phoneBook.length;j++) {
-        if (phoneBook[j].name.toLowerCase().indexOf(query.toLowerCase())!=-1 || phoneBook[j].phone.indexOf(query)!=-1 ||
+        if (phoneBook[j].name.toLowerCase().indexOf(query.toLowerCase())!=-1 || phoneBook[j].phone.indexOf(query!=-1) ||
             phoneBook[j].email.toLowerCase().indexOf(query.toLowerCase())!=-1) {
             phoneBook.splice(j, 1);
             isDelete++;
@@ -102,4 +102,3 @@ module.exports.remove = function remove(query) {
     }
     console.log('Удалено '+isDelete+' контактов')
 };
-
