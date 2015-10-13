@@ -23,35 +23,33 @@ module.exports.add = function add(name, phone, email) {
 
 function makeCorrectPhone (phone) {
     var correctPhone='+';
+    var badPhone='';
 
-    phone=phone.replace(/[\+?\s?\(?\)?]/,'');
+    for (var b=0;b<phone.length;b++) {
+        if (phone[b]!='+' && phone[b]!=' ' && phone[b]!='(' && phone[b]!=')' && phone[b]!='-') {
+            badPhone+=phone[b];
+        }
+    }
 
-    if (phone.length-10===0) {
+    if (badPhone.length-10===0) {
         correctPhone+='7';
     }
-    for(var i=0; i<(phone.length-10);i++) {
-        correctPhone+=phone[i];
+    for(var i=0; i<(badPhone.length-10);i++) {
+        correctPhone+=badPhone[i];
     }
-    correctPhone[i+1]='(';
+    correctPhone+='(';
     for (var j=0;j<3;j++) {
-        correctPhone+=phone[i];
+        correctPhone+=badPhone[i];
         i++;
     }
     correctPhone+=')';
-    for (j=0;j<3;j++) {
-        correctPhone+=phone[i];
-        i++;
-    }
-    correctPhone+='-';
-    correctPhone+=phone[i];
-    i++;
-    correctPhone+='-';
-    for (j=0;j<3;j++) {
-        correctPhone+=phone[i];
+    for (j=0;j<7;j++) {
+        correctPhone+=badPhone[i];
         i++;
     }
     return correctPhone;
 }
+
 
 
 
@@ -78,15 +76,16 @@ module.exports.find = function find(query) {
         }
         else {
             for (var i=0; i<phoneBook.length;i++){
-                var queryName = phoneBook[i].name.substr(0, query.length);
-                var queryPhone = phoneBook[i].phone.substr(0, query.length);
-                var queryEmail = phoneBook[i].email.substr(0, query.length);
-                if (queryName != '' || queryPhone != '' || queryEmail != '') {
+                var queryName = phoneBook[i].name.indexOf(query.toLowerCase());
+                var queryPhone = phoneBook[i].phone.indexOf(query.toLowerCase());
+                var queryEmail = phoneBook[i].email.indexOf(query.toLowerCase());
+                if (queryName != -1 || queryPhone != -1 || queryEmail != -1) {
                     console.log(phoneBook[i].name + ', ' + phoneBook[i].phone + ', ' + phoneBook[i].email);
             }
         }
     }
 };
+
 
 /*
  Функция удаления записи в телефонной книге.
